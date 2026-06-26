@@ -12,7 +12,10 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-    
+
+    // const UsersService = new UsersService(); // not recommended way
+    constructor(readonly UsersService: UsersService) {}; // best dependency injection
+
     @Get() // GET /users
     findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
         return [];
