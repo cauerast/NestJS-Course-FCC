@@ -12,9 +12,7 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-
     
-
     @Get() // GET /users
     findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
         return [];
