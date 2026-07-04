@@ -1,21 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Ip } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import { Prisma } from '../generated/prisma/client';
+import { Prisma, Role } from '../generated/prisma/client';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { MyLoggerService } from '../my-logger/my-logger.service';
 
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
+  private readonly logger = new MyLoggerService(EmployeesController.name)
 
   @Post()
   create(@Body() createEmployeeDto: Prisma.EmployeeCreateInput) {
     return this.employeesService.create(createEmployeeDto);
   }
 
+  @SkipThrottle({default: false})
   @Get()
-  findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
+  findAll(@Ip() ip?: string, @Query('role') role?: Role) {
+    this.logger.log(`Request for all employees\t${ip} `);
     return this.employeesService.findAll(role);
   }
 
+  @Throttle({ short: { ttl:1000, limit: 1 } }) // overwriting short 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.employeesService.findOne(+id);
