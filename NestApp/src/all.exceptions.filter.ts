@@ -3,12 +3,12 @@ import {
   ArgumentsHost,
   HttpStatus,
   HttpException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import type { Request, Response } from 'express';
 import { MyLoggerService } from './my-logger/my-logger.service';
 import { PrismaClientValidationError } from '@prisma/client/runtime/client';
+import { exec } from 'child_process';
 
 type MyResponseObj = {
   statusCode: number;
@@ -46,6 +46,6 @@ export class AllExceptionsFIlter extends BaseExceptionFilter {
 
     response.status(myResponseObj.statusCode).json(myResponseObj);
     this.logger.error(myResponseObj.response, AllExceptionsFIlter.name);
+    super.catch(exception, host);
   }
-
 }
