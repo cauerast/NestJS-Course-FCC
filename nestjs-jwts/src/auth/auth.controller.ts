@@ -8,13 +8,13 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/local/signup')
-  async signupLocal(@Body() authDto: AuthDto): Promise<Tokens> {
-    return await this.authService.signupLocal(authDto);
+  signupLocal(@Body() authDto: AuthDto): Promise<Tokens> {
+    return this.authService.signupLocal(authDto);
   }
 
   @Post('/local/signin')
-  signinLocal() {
-    return this.authService.signinLocal();
+  login(@Body() authDto: AuthDto): Promise<Tokens> {
+    return this.authService.login(authDto);
   }
 
   @Post('/logout')
