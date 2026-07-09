@@ -1,1 +1,1 @@
-# NestJS-Course-FCC
+# NESTJS-COURSE-FCC
