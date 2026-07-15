@@ -114,5 +114,9 @@ export class AuthService {
 
     const rtMatches = await bcrypt.compare(rt, user.hashedRt);
     if (!rtMatches) throw new ForbiddenException('Access Denied');
+
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    return tokens;
   }
 }
