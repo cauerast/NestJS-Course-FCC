@@ -4,12 +4,14 @@ import { AuthDto } from './dto';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types/tokens.type';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private config: ConfigService,
   ) {}
 
   hashData(data: string) {
@@ -24,7 +26,7 @@ export class AuthService {
           email,
         },
         {
-          secret: process.env.JWT_AT_SECRET,
+          secret: this.config.getOrThrow('JWT_AT_SECRET'),
           expiresIn: 60 * 15, // 15 min
         },
       ),
@@ -35,7 +37,7 @@ export class AuthService {
           email,
         },
         {
-          secret: process.env.JWT_RT_SECRET,
+          secret: this.config.getOrThrow('JWT_RT_SECRET'),
           expiresIn: 60 * 60 * 24 * 7, // a week
         },
       ),
