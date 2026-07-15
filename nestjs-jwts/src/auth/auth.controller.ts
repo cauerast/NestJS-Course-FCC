@@ -12,7 +12,7 @@ import { AuthDto } from './dto';
 import { Tokens } from './types/tokens.type';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
-import { jwtPayload } from './types/jwt-payload.types';
+import { jwtPayloadAt, jwtPayloadRt } from './types/jwt-payload.types';
 
 @Controller('auth')
 export class AuthController {
@@ -34,14 +34,15 @@ export class AuthController {
   @Post('/logout')
   @HttpCode(HttpStatus.OK)
   logout(@Req() req: Request) {
-    const user = req.user as jwtPayload;
+    const user = req.user as jwtPayloadAt;
     return this.authService.logout(user.sub);
   }
 
   @UseGuards(AuthGuard('jwt-refresh'))
   @Post('/refresh')
   @HttpCode(HttpStatus.OK)
-  refreshToken() {
-    return this.authService.refreshToken();
+  refreshToken(@Req() req: Request) {
+    const user = req.user as jwtPayloadRt;
+    return this.authService.refreshToken(user.sub, user.refreshToken);
   }
 }
