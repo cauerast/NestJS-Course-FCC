@@ -5,33 +5,34 @@ import {
   HttpStatus,
   Post,
   UseGuards,
-} from '@nestjs/common'; // import Req to user Request (express);
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
 import { Tokens } from './types/tokens.type';
-import type { Request } from 'express';
-// import { jwtPayloadAt, jwtPayloadRt } from './types/jwt-payload.types';
-import { RtGuard, AtGuard } from '../common/guards/index';
+import { RtGuard } from '../common/guards/index';
 import { getCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
 import { getCurrentUser } from '../common/decorators/get-current-user.decorator';
+import { Public } from '../common/decorators';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @Post('/local/signup')
   @HttpCode(HttpStatus.CREATED)
   signupLocal(@Body() authDto: AuthDto): Promise<Tokens> {
     return this.authService.signupLocal(authDto);
   }
 
+  @Public()
   @Post('/local/signin')
   @HttpCode(HttpStatus.OK)
   login(@Body() authDto: AuthDto): Promise<Tokens> {
     return this.authService.login(authDto);
   }
 
-  @UseGuards(AtGuard)
+  // @UseGuards(AtGuard) - dont need to use because atGuard is set to be global (main.ts)
   @Post('/logout')
   @HttpCode(HttpStatus.OK)
   logout(@getCurrentUserId() userId: number) {
