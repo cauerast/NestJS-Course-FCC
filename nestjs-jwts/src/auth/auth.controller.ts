@@ -39,6 +39,7 @@ export class AuthController {
     return this.authService.logout(userId);
   }
 
+  @Public() // this route must to be public, so we dont need to pass the AT, only the RT to refresh
   @UseGuards(RtGuard)
   @Post('/refresh')
   @HttpCode(HttpStatus.OK)
